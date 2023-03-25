@@ -1,0 +1,22 @@
+INFO	2023/03/25 21:42:55 listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:43:44 listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:43:46 listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:43:49 listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:43:58 listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:44:44 Errors.go:15: listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:44:46 Errors.go:15: listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:44:48 Errors.go:15: listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:50:58 Запуск сервера на http://localhost:8080
+INFO	2023/03/25 21:52:36 Запуск сервера на http://localhost:8080
+INFO	2023/03/25 21:52:42 Запуск сервера на http://localhost:8080
+INFO	2023/03/25 21:52:42 Errors.go:25: listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:52:43 Запуск сервера на http://localhost:8080
+INFO	2023/03/25 21:52:43 Errors.go:25: listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:52:45 Запуск сервера на http://localhost:8080
+INFO	2023/03/25 21:52:45 Errors.go:25: listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:52:47 Запуск сервера на http://localhost:8080
+INFO	2023/03/25 21:52:47 Errors.go:25: listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:52:50 Запуск сервера на http://localhost:8080
+INFO	2023/03/25 21:52:50 Errors.go:25: listen tcp :8080: bind: address already in use
+INFO	2023/03/25 21:54:13 Запуск сервера на http://localhost:8080
+INFO	2023/03/25 21:54:46 Запуск сервера на http://localhost:8080
