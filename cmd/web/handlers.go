@@ -2,7 +2,6 @@ package web
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"text/template"
@@ -14,38 +13,38 @@ var files = []string{
 	"./ui/html/footer.partial.html",
 }
 
-func Home(w http.ResponseWriter, r *http.Request) {
+func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		http.NotFound(w, r)
+		app.notFound(w)
 		return
 	}
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, "Internal Server Error", 500)
+		app.errorLog.Println(err.Error())
+		app.serverError(w, err)
 		return
 	}
 	err = ts.Execute(w, "Hello")
 	if err != nil {
-		log.Println(err.Error())
-		http.Error(w, "Internal Server Error", 500)
+		app.errorLog.Println(err.Error())
+		app.serverError(w, err)
 	}
 	w.Write([]byte("hello!!!"))
 }
 
-func ShowSnippet(w http.ResponseWriter, r *http.Request) {
+func (app *application) ShowSnippet(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
-		http.NotFound(w, r)
+		app.notFound(w)
 		return
 	}
 	fmt.Fprintf(w, "Show snippet with ID %d...", id)
 }
 
-func CreateSnippet(w http.ResponseWriter, r *http.Request) {
+func (app *application) CreateSnippet(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.Header().Set("Allow", http.MethodPost)
-		http.Error(w, "Method Not Allowed!", 405)
+		app.clientError(w, http.StatusMethodNotAllowed)
 	}
 	w.Write([]byte("create snippet!!!"))
 }

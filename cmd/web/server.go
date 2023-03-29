@@ -1,12 +1,21 @@
 package web
 
 import (
-	"forum_alem_01/pkg"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 )
+
+var (
+	infoLog  = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errorLog = log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+)
+
+type application struct {
+	infoLog  *log.Logger
+	errorLog *log.Logger
+}
 
 func Server() {
 	port := ""
@@ -20,8 +29,10 @@ func Server() {
 		port = "8080"
 	}
 
-	// infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app := &application{
+		errorLog: errorLog,
+		infoLog:  infoLog,
+	}
 
 	mux := http.NewServeMux()
 
@@ -29,15 +40,14 @@ func Server() {
 	// mux.Handle("/static", http.NotFoundHandler()) ???
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	mux.HandleFunc("/", Home)
-	mux.HandleFunc("/snippet", ShowSnippet)
-	mux.HandleFunc("/snippet/create", CreateSnippet)
+	mux.HandleFunc("/", app.Home)
+	mux.HandleFunc("/snippet", app.ShowSnippet)
+	mux.HandleFunc("/snippet/create", app.CreateSnippet)
 
-	pkg.LogInfo("Запуск сервера на http://localhost:" + port)
-	// infoLog.Println("Запуск сервера на http://localhost:" + port)
+	infoLog.Println("Запуск сервера на http://localhost:" + port)
 
 	err := http.ListenAndServe(":"+port, mux)
-	pkg.LogError(err)
+
 	errorLog.Fatal(err)
 }
 
