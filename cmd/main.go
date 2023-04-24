@@ -1,7 +1,13 @@
 package main
 
-import "forum_alem_01/cmd/web"
+import (
+	"log"
+	"testForum/internal/server"
+)
 
 func main() {
-	web.Server()
+	err := server.Server()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
