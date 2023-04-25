@@ -7,7 +7,9 @@
 	</div>
 	<div class=" panel panel-default">
 		<div class="panel-heading">
-		  <h3 class="panel-title "><a href="/edit?id={{$key}}">{{$value.Title }}</a><br>Username</h3>
+		  <h3 class="panel-title" style="color: blue;"><a href="/edit?id={{$key}}">{{$value.Title }}</a>
+		  <h3 class="username" style="font-size: 15px;">Username</h3>
+
 		</div>
 		<div class="panel-body">
 			{{ $value.Content }}
@@ -34,7 +36,7 @@
 
 
 {{ end }}
-{{ template "write" }}
+{{ template "comment" }}
 
 {{ template "footer" }}
 {{end}}

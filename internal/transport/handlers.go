@@ -27,7 +27,17 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, err.Error())
 	}
 
-	t.ExecuteTemplate(w, "index", posts)
+	homePosts := make(map[string]*models.Post)
+
+	for _, v := range posts {
+		if v.Title != "" {
+			homePosts[v.Id] = v
+		} else {
+			continue
+		}
+	}
+
+	t.ExecuteTemplate(w, "index", homePosts)
 }
 
 func signHandler(w http.ResponseWriter, r *http.Request) {
@@ -89,6 +99,8 @@ func savePostHandler(w http.ResponseWriter, r *http.Request) {
 	content := r.FormValue("content")
 	chTheme = r.FormValue("category")
 
+	fmt.Printf("ffff - %v\n", chTheme)
+
 	var post *models.Post
 
 	if id != "" {
@@ -104,6 +116,7 @@ func savePostHandler(w http.ResponseWriter, r *http.Request) {
 		// 	posts[chTheme] = make(map[string]*models.Post, 0)
 		// }
 
+		fmt.Printf("bbb - %v\n", chTheme)
 		newPost := models.NewPost(id, title, content, chTheme)
 
 		posts[newPost.Id] = newPost
@@ -115,9 +128,26 @@ func savePostHandler(w http.ResponseWriter, r *http.Request) {
 		// }
 
 	}
+	tempTheme := fmt.Sprintf("/view?theme=%s", chTheme)
 	fmt.Printf("posts: %v\n", posts)
 
-	http.Redirect(w, r, "/", 302)
+	http.Redirect(w, r, tempTheme, 302)
+}
+
+func commentPostHandler(w http.ResponseWriter, r *http.Request) {
+	title := ""
+	content := r.FormValue("content")
+
+	id := pkg.GenerateId()
+
+	fmt.Printf("comment - %s\n", chTheme)
+	newPost := models.NewPost(id, title, content, chTheme)
+
+	posts[newPost.Id] = newPost
+
+	tempTheme := fmt.Sprintf("/view?theme=%s", chTheme)
+
+	http.Redirect(w, r, tempTheme, 302)
 }
 
 func signUpHandler(w http.ResponseWriter, r *http.Request) {
@@ -142,26 +172,6 @@ func signUpHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(comngStruct)
 
-	// var post *models.Post
-
-	// if id != "" {
-	// 	post = posts[chTheme][id]
-	// 	post.Title = title
-	// 	post.Content = content
-	// } else {
-	// 	id = GenerateId()
-
-	// 	_, found := posts[chTheme]
-	// 	if !found {
-	// 		posts[chTheme] = make(map[string]*models.Post, 0)
-	// 	}
-
-	// 	newPost := models.NewPost(id, title, content)
-	// 	posts[chTheme][newPost.Id] = newPost
-
-	// }
-	// fmt.Printf("posts: %v\n", posts)
-
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -177,21 +187,33 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func viewHandler(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("templates/view.html", "templates/write.html", "templates/header.html", "templates/footer.html")
+	t, err := template.ParseFiles("templates/view.html", "templates/comment.html", "templates/header.html", "templates/footer.html")
 	if err != nil {
 		fmt.Fprintf(w, err.Error())
 	}
 	chTheme = r.URL.Query().Get("theme")
+	fmt.Printf("view - %v\n", chTheme)
 
-	postTheme, found := posts[chTheme]
-	if !found {
-		// fmt.Printf("tut: %s\n", chTheme)
-		t.ExecuteTemplate(w, "view", nil)
-		return
+	arrPosts := make(map[string]*models.Post)
+
+	for _, v := range posts {
+		if v.Theme == chTheme {
+			arrPosts[v.Id] = v
+		} else {
+			continue
+		}
 	}
-	// fmt.Printf("tut222222: %s\n", chTheme)
 
-	t.ExecuteTemplate(w, "view", postTheme)
+	t.ExecuteTemplate(w, "view", arrPosts)
+}
+
+func createHandler(w http.ResponseWriter, r *http.Request) {
+	t, err := template.ParseFiles("templates/write.html", "templates/header.html", "templates/footer.html")
+	if err != nil {
+		fmt.Fprintf(w, err.Error())
+	}
+
+	t.ExecuteTemplate(w, "write", nil)
 }
 
 func Handlers() {
@@ -204,6 +226,8 @@ func Handlers() {
 	http.HandleFunc("/edit", editHandler)
 	http.HandleFunc("/delete", deleteHandler)
 	http.HandleFunc("/view", viewHandler)
+	http.HandleFunc("/create", createHandler)
+	http.HandleFunc("/CommentPost", commentPostHandler)
 	http.HandleFunc("/SavePost", savePostHandler)
 	http.HandleFunc("/SignUp", signUpHandler)
 
