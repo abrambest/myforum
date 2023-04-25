@@ -17,7 +17,7 @@ type ContactDetails struct {
 }
 
 var (
-	posts   map[string]map[string]*models.Post
+	posts   map[string]*models.Post
 	chTheme string
 )
 
@@ -75,7 +75,7 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	id := r.FormValue("id")
 
-	post, found := posts[chTheme][id]
+	post, found := posts[id]
 	if !found {
 		http.NotFound(w, r)
 		return
@@ -92,27 +92,27 @@ func savePostHandler(w http.ResponseWriter, r *http.Request) {
 	var post *models.Post
 
 	if id != "" {
-		post = posts[chTheme][id]
+		post = posts[id]
 		post.Title = title
 		post.Content = content
 
 	} else {
 		id = pkg.GenerateId()
 
-		_, found := posts[chTheme]
-		if !found {
-			posts[chTheme] = make(map[string]*models.Post, 0)
-		}
+		// _, found := posts[chTheme]
+		// if !found {
+		// 	posts[chTheme] = make(map[string]*models.Post, 0)
+		// }
 
-		newPost := models.NewPost(id, title, content)
+		newPost := models.NewPost(id, title, content, chTheme)
 
-		posts[chTheme][newPost.Id] = newPost
+		posts[newPost.Id] = newPost
 
-		if _, ok := posts[chTheme]; !ok {
-			fmt.Println("posts: AAAAAAAAAAAA posts")
-			http.Error(w, "Выберите категорию", http.StatusBadRequest)
-			return
-		}
+		// if _, ok := posts[chTheme]; !ok {
+		// 	fmt.Println("posts: AAAAAAAAAAAA posts")
+		// 	http.Error(w, "Выберите категорию", http.StatusBadRequest)
+		// 	return
+		// }
 
 	}
 	fmt.Printf("posts: %v\n", posts)
@@ -195,7 +195,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func Handlers() {
-	posts = make(map[string]map[string]*models.Post, 0)
+	posts = make(map[string]*models.Post, 0)
 
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets"))))
 	http.HandleFunc("/", indexHandler)

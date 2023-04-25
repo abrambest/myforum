@@ -1,2 +1,5 @@
-header.html
+header.html - move nav bar to center
+index - edit
+view
+write -  add if not
 
